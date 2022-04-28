@@ -19,7 +19,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
-        System.out.println("import " + ctx.CLASSNAME());
+        System.out.println("import " + ctx.CLASSNAME().getText());
     }
 
     @Override
