@@ -2,6 +2,9 @@ package compiler;
 
 import gen.JythonListener;
 import gen.JythonParser;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class ProgramPrinter implements JythonListener {
     @Override
@@ -16,7 +19,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
-
+        System.out.println("import " + ctx.CLASSNAME());
     }
 
     @Override
@@ -26,7 +29,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
-
+        //System.out.println("class " + ctx.CLASSNAME() + '(' + ctx.CLASSNAME() + ')');
     }
 
     @Override
@@ -106,7 +109,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterReturn_statment(JythonParser.Return_statmentContext ctx) {
-
+        System.out.println();
     }
 
     @Override
@@ -271,6 +274,26 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void exitAssignment_operators(JythonParser.Assignment_operatorsContext ctx) {
+
+    }
+
+    @Override
+    public void visitTerminal(TerminalNode terminalNode) {
+
+    }
+
+    @Override
+    public void visitErrorNode(ErrorNode errorNode) {
+
+    }
+
+    @Override
+    public void enterEveryRule(ParserRuleContext parserRuleContext) {
+
+    }
+
+    @Override
+    public void exitEveryRule(ParserRuleContext parserRuleContext) {
 
     }
 }
