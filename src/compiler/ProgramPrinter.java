@@ -1,5 +1,6 @@
 package compiler;
 
+
 import gen.JythonListener;
 import gen.JythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -7,9 +8,10 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class ProgramPrinter implements JythonListener {
+
     @Override
     public void enterProgram(JythonParser.ProgramContext ctx) {
-        System.out.println(ctx.getText());
+
     }
 
     @Override
@@ -29,7 +31,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
-        System.out.println(ctx.CLASSNAME());
+
     }
 
     @Override
