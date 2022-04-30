@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class ProgramPrinter implements JythonListener {
     @Override
     public void enterProgram(JythonParser.ProgramContext ctx) {
-
+        System.out.println(ctx.getText());
     }
 
     @Override
@@ -19,7 +19,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
-        System.out.println("import " + ctx.CLASSNAME().getText());
+
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
-        //System.out.println("class " + ctx.CLASSNAME() + '(' + ctx.CLASSNAME() + ')');
+        System.out.println(ctx.CLASSNAME());
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterReturn_statment(JythonParser.Return_statmentContext ctx) {
-        System.out.println();
+
     }
 
     @Override
