@@ -7,11 +7,15 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.List;
+
 public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterProgram(JythonParser.ProgramContext ctx) {
-
+        System.out.println("Program start {");
+        System.out.println(ctx.getText());
+        System.out.println('}');
     }
 
     @Override
@@ -21,7 +25,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
-
+        System.out.println("import class: " + ctx.CLASSNAME());
     }
 
     @Override
@@ -31,7 +35,9 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
-
+        System.out.println("class: " + ctx.CLASSNAME() + "/ class parents: " + ctx.getParent() + ", {");
+        //enterClass_body(ctx.class_body());
+        System.out.println('}');
     }
 
     @Override
@@ -51,7 +57,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterVarDec(JythonParser.VarDecContext ctx) {
-
+        System.out.println("field: " + ctx.getText() + "/ type= " + ctx.TYPE());
     }
 
     @Override
@@ -61,7 +67,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterArrayDec(JythonParser.ArrayDecContext ctx) {
-
+        System.out.println("field: " + ctx.getText() + "/ type= " + ctx.TYPE());
     }
 
     @Override
@@ -71,7 +77,9 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterMethodDec(JythonParser.MethodDecContext ctx) {
-
+        System.out.println("class method: " + ctx.CLASSNAME() + " return type:" + ctx.TYPE() + '{');
+        //method body
+        System.out.println('}');
     }
 
     @Override
@@ -81,7 +89,11 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterConstructor(JythonParser.ConstructorContext ctx) {
-
+        System.out.println("class constructor: " + ctx.CLASSNAME().getText() + '{');
+        System.out.print("    parameters list: ");
+        if (ctx.parameter() != null) {
+            //parameter
+        }
     }
 
     @Override
@@ -91,7 +103,11 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterParameter(JythonParser.ParameterContext ctx) {
-
+        System.out.print("parameter list: [");
+        for (int i = 0; i < ctx.varDec().size(); i++) {
+            System.out.println(ctx.varDec(i).TYPE().getText() + ' ' + ctx.varDec(i).ID().getText() + ", ");
+        }
+        System.out.println(']');
     }
 
     @Override
@@ -111,7 +127,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterReturn_statment(JythonParser.Return_statmentContext ctx) {
-
+        System.out.println("return type: " + ctx.getText());
     }
 
     @Override
@@ -121,7 +137,21 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterCondition_list(JythonParser.Condition_listContext ctx) {
-
+        System.out.print('(');
+        if (ctx.condition().size() == 1) {
+            System.out.println(ctx.condition().get(0));
+        } else {
+            for (JythonParser.ConditionContext cnd :
+                    ctx.condition()) {
+                if (ctx.getText().contains("or")) {
+                    System.out.print("or");
+                } else if (ctx.getText().contains("and")) {
+                    System.out.print("and");
+                }
+                System.out.print(cnd.getText());
+            }
+        }
+        System.out.print(')');
     }
 
     @Override
@@ -141,7 +171,9 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterIf_statment(JythonParser.If_statmentContext ctx) {
-
+        System.out.println("if " + ctx.condition_list() + " {");
+        //body
+        System.out.println('}');
     }
 
     @Override
@@ -151,7 +183,9 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterWhile_statment(JythonParser.While_statmentContext ctx) {
-
+        System.out.println("while " + ctx.condition_list() + " {");
+        //body
+        System.out.println('}');
     }
 
     @Override
@@ -161,7 +195,11 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterIf_else_statment(JythonParser.If_else_statmentContext ctx) {
-
+        System.out.println("if " + ctx.condition_list() + " {");
+        //body
+        System.out.println("} else {");
+        //body
+        System.out.println('}');
     }
 
     @Override
@@ -221,7 +259,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterPrefixexp(JythonParser.PrefixexpContext ctx) {
-
+        System.out.println(ctx.prefixexp().getText());
     }
 
     @Override
@@ -231,7 +269,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterArgs(JythonParser.ArgsContext ctx) {
-
+        System.out.println('(' + ctx.explist().getText() + ')');
     }
 
     @Override
@@ -241,7 +279,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterExplist(JythonParser.ExplistContext ctx) {
-
+        System.out.println('(' + ctx.getText() + ')');
     }
 
     @Override
@@ -251,7 +289,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterArithmetic_operator(JythonParser.Arithmetic_operatorContext ctx) {
-
+        System.out.print(ctx.getText());
     }
 
     @Override
@@ -261,7 +299,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterRelational_operators(JythonParser.Relational_operatorsContext ctx) {
-
+        System.out.print(ctx.getText());
     }
 
     @Override
@@ -271,7 +309,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterAssignment_operators(JythonParser.Assignment_operatorsContext ctx) {
-
+        System.out.print(ctx.getText());
     }
 
     @Override
