@@ -11,10 +11,8 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 
 public class Compiler {
     public static void main(String[] args) throws IOException {
@@ -37,9 +35,52 @@ public class Compiler {
         walker.walk(listener, tree);
     }
 
-    public static void semanticAnalysis(String path) throws FileNotFoundException {
+    public static void semanticAnalysis(String path) throws IOException {
         File file = new File(path);
-        FileReader reader = new FileReader(file);
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        ArrayList<Symbol_Table> tables = new ArrayList<>();
+        // read file
+        int i = 0;
+        for (String line : reader.lines().toList()
+        ) {
+            i++;
+            //remove spaces from the beginning of the line
+            line = line.replaceFirst("^\\s*", "");
+            boolean isNewScope = isNewScope(line);
+            if (isNewScope) {
+                String name = "";
+                if (line.contains("if")) {
+                    name = "if";
+                } else if (line.contains("elif")) {
+                    name = "elif";
+                } else if (line.contains("else")) {
+                    name = "else";
+                } else if (line.contains("while")) {
+                    name = "while";
+                } else if (line.contains("for")) {
+                    name = "for";
+                } else {
+                    String[] splitted = line.split(" ");
+                    name = splitted[1];
+                }
+                Symbol_Table table = new Symbol_Table(name, i);
+            }
+        }
 
+        //print file
+//        for (int j = 0; j < tables.size(); j++) {
+//            for (int k = 0; k < tables.get(j).; k++) {
+//
+//            }
+//        }
+    }
+
+    public static boolean isNewScope(String line) {
+        if (line.contains("import") || line.contains("class") || line.contains("def") || line.contains("if") ||
+                line.contains("elif") || line.contains("else") || line.contains("while") || line.contains("for")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
