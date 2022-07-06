@@ -14,18 +14,22 @@ public class ProgramPrinter implements JythonListener {
     @Override
     public void enterProgram(JythonParser.ProgramContext ctx) {
         System.out.println("Program start {");
-        System.out.println(ctx.getText());
-        System.out.println('}');
+//        System.out.println(ctx.getText());
+//        System.out.println('}');
     }
 
     @Override
     public void exitProgram(JythonParser.ProgramContext ctx) {
-
+        System.out.println('}');
     }
 
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
-        System.out.println("import class: " + ctx.CLASSNAME());
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + "import class: " + ctx.CLASSNAME());
     }
 
     @Override
@@ -35,14 +39,25 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
-        System.out.println("class: " + ctx.CLASSNAME() + "/ class parents: " + ctx.getParent() + ", {");
-        //enterClass_body(ctx.class_body());
-        System.out.println('}');
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.print(indent_level + "class: " + ctx.CLASSNAME() + "/ class parents: ");
+        if (!ctx.getParent().isEmpty()) {
+            System.out.println(ctx.getParent() + ", {");
+        } else {
+            System.out.println("object, {");
+        }
     }
 
     @Override
     public void exitClassDef(JythonParser.ClassDefContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + '}');
     }
 
     @Override
@@ -57,62 +72,125 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterVarDec(JythonParser.VarDecContext ctx) {
-        System.out.println("field: " + ctx.getText() + "/ type= " + ctx.TYPE());
+//        if (ctx.getParent()) {
+//            if (ctx.CLASSNAME() != null) {
+//                System.out.print(ctx.CLASSNAME());
+//            } else if (ctx.TYPE() != null) {
+//                System.out.print(ctx.TYPE());
+//            }
+//            System.out.println(" " + ctx.ID());
+//        } else {
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.print(indent_level + "field: " + ctx.ID() + "/ type= ");
+        if (ctx.CLASSNAME() != null) {
+            System.out.print(ctx.CLASSNAME());
+        } else if (ctx.TYPE() != null) {
+            System.out.print(ctx.TYPE());
+        }
+        //}
     }
 
     @Override
     public void exitVarDec(JythonParser.VarDecContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level);
     }
 
     @Override
     public void enterArrayDec(JythonParser.ArrayDecContext ctx) {
-        System.out.println("field: " + ctx.getText() + "/ type= " + ctx.TYPE());
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        String type = null;
+        if (ctx.CLASSNAME() != null) {
+            type = ctx.CLASSNAME().getText();
+        } else if (ctx.TYPE() != null) {
+            type = ctx.TYPE().getText();
+        }
+        System.out.print(indent_level + "field: " + ctx.ID() + "/ type= " + type);
     }
 
     @Override
     public void exitArrayDec(JythonParser.ArrayDecContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level);
     }
 
     @Override
     public void enterMethodDec(JythonParser.MethodDecContext ctx) {
-        System.out.println("class method: " + ctx.CLASSNAME() + " return type:" + ctx.TYPE() + '{');
-        //method body
-        System.out.println('}');
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        String type = null;
+        if (ctx.CLASSNAME() != null) {
+            type = ctx.CLASSNAME().getText();
+        } else if (ctx.TYPE() != null) {
+            type = ctx.TYPE().getText();
+        } else {
+            type = "void";
+        }
+        System.out.println(indent_level + "class method: " + ctx.ID() + "/ return type: " + type + '{');
     }
 
     @Override
     public void exitMethodDec(JythonParser.MethodDecContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + '}');
     }
 
     @Override
     public void enterConstructor(JythonParser.ConstructorContext ctx) {
-        System.out.println("class constructor: " + ctx.CLASSNAME().getText() + '{');
-        System.out.print("    parameters list: ");
-        if (ctx.parameter() != null) {
-            //parameter
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
         }
+        System.out.println(indent_level + "class constructor: " + ctx.CLASSNAME().getText() + '{');
     }
 
     @Override
     public void exitConstructor(JythonParser.ConstructorContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + "}");
     }
 
     @Override
     public void enterParameter(JythonParser.ParameterContext ctx) {
-        System.out.print("parameter list: [");
-        for (int i = 0; i < ctx.varDec().size(); i++) {
-            System.out.println(ctx.varDec(i).TYPE().getText() + ' ' + ctx.varDec(i).ID().getText() + ", ");
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
         }
-        System.out.println(']');
+        System.out.print(indent_level + "parameter list: [");
+        String type = null;
+        for (int i = 0; i < ctx.varDec().size(); i++) {
+            if (ctx.varDec(i).CLASSNAME() != null) {
+                type = ctx.varDec(i).CLASSNAME().getText();
+            } else if (ctx.varDec(i).TYPE() != null) {
+                type = ctx.varDec(i).TYPE().getText();
+            }
+            System.out.print(type + ' ' + ctx.varDec(i).ID().getText() + ", ");
+        }
     }
 
     @Override
     public void exitParameter(JythonParser.ParameterContext ctx) {
-
+        System.out.println(']');
     }
 
     @Override
@@ -127,28 +205,42 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterReturn_statment(JythonParser.Return_statmentContext ctx) {
-        System.out.println("return type: " + ctx.getText());
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.print(indent_level + "return type: ");
+        enterExp(ctx.exp());
     }
 
     @Override
     public void exitReturn_statment(JythonParser.Return_statmentContext ctx) {
-
+        System.out.print('\n');
     }
 
     @Override
     public void enterCondition_list(JythonParser.Condition_listContext ctx) {
         System.out.print('(');
-        if (ctx.condition().size() == 1) {
-            System.out.println(ctx.condition().get(0));
-        } else {
-            for (JythonParser.ConditionContext cnd :
-                    ctx.condition()) {
-                if (ctx.getText().contains("or")) {
-                    System.out.print("or");
-                } else if (ctx.getText().contains("and")) {
-                    System.out.print("and");
-                }
-                System.out.print(cnd.getText());
+//        if (ctx.condition().size() == 1) {
+//            enterCondition(ctx.condition(0));
+//            System.out.print(')');
+//        } else {
+//            for (JythonParser.ConditionContext cnd :
+//                    ctx.condition()) {
+//                if (ctx.getText().contains("or")) {
+//                    System.out.print("or");
+//                } else if (ctx.getText().contains("and")) {
+//                    System.out.print("and");
+//                }
+//                System.out.println(cnd);
+//            }
+//        }
+        for (int i = 0; i < ctx.condition().size(); i++) {
+            enterCondition(ctx.condition(i));
+            if (ctx.getText().contains("or")) {
+                System.out.print("or");
+            } else if (ctx.getText().contains("and")) {
+                System.out.print("and");
             }
         }
         System.out.print(')');
@@ -161,7 +253,15 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterCondition(JythonParser.ConditionContext ctx) {
-
+        if (ctx.BOOL() != null) {
+            System.out.println(ctx.BOOL().getText());
+        } else if (ctx.prefixexp() != null) {
+            enterPrefixexp(ctx.prefixexp());
+        } else {
+            enterExp(ctx.exp(0));
+            enterRelational_operators(ctx.relational_operators());
+            enterExp(ctx.exp(1));
+        }
     }
 
     @Override
@@ -171,45 +271,72 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterIf_statment(JythonParser.If_statmentContext ctx) {
-        System.out.println("if " + ctx.condition_list() + " {");
-        //body
-        System.out.println('}');
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.print(indent_level + "if ");
+        enterCondition_list(ctx.condition_list());
+        System.out.println('{');
     }
 
     @Override
     public void exitIf_statment(JythonParser.If_statmentContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + '}');
     }
 
     @Override
     public void enterWhile_statment(JythonParser.While_statmentContext ctx) {
-        System.out.println("while " + ctx.condition_list() + " {");
-        //body
-        System.out.println('}');
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.print(indent_level + "while ");
+        enterCondition_list(ctx.condition_list());
+        System.out.println('{');
     }
 
     @Override
     public void exitWhile_statment(JythonParser.While_statmentContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + '}');
     }
 
     @Override
     public void enterIf_else_statment(JythonParser.If_else_statmentContext ctx) {
-        System.out.println("if " + ctx.condition_list() + " {");
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + "if " + ctx.condition_list() + " {");
         //body
-        System.out.println("} else {");
+        System.out.println(indent_level + "} else {");
         //body
-        System.out.println('}');
     }
 
     @Override
     public void exitIf_else_statment(JythonParser.If_else_statmentContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + '}');
     }
 
     @Override
     public void enterPrint_statment(JythonParser.Print_statmentContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + ctx.getText());
     }
 
     @Override
@@ -219,22 +346,45 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterFor_statment(JythonParser.For_statmentContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        if (ctx.INTEGER() != null) {
+            System.out.println(indent_level + "for " + ctx.ID(0) + " in " + ctx.ID(1) + '{');
+            enterStatement(ctx.statement(0));
+        } else {
+            System.out.println(indent_level + "for " + ctx.ID() + " in range (" + ctx.INTEGER(0) +
+                    ", " + ctx.INTEGER(1) + ", " + ctx.INTEGER(2) + '{');
+            enterStatement(ctx.statement(0));
+        }
     }
 
     @Override
     public void exitFor_statment(JythonParser.For_statmentContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.println(indent_level + '}');
     }
 
     @Override
     public void enterMethod_call(JythonParser.Method_callContext ctx) {
-
+        String indent_level = "";
+        for (int i = 0; i < ctx.getParent().depth() * 4; i++) {
+            indent_level += ' ';
+        }
+        System.out.print(indent_level + ctx.ID().getText());
+        if (ctx.args() != null) {
+            System.out.print('.');
+            enterArgs(ctx.args());
+        }
     }
 
     @Override
     public void exitMethod_call(JythonParser.Method_callContext ctx) {
-
+        System.out.print('\n');
     }
 
     @Override
@@ -249,7 +399,39 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterExp(JythonParser.ExpContext ctx) {
-
+        if (ctx.getText() == "none") {
+            System.out.print("none");
+        } else if (ctx.BOOL() != null) {
+            System.out.print(ctx.BOOL().getText());
+        } else if (ctx.INTEGER() != null) {
+            System.out.print(ctx.INTEGER().getText());
+        } else if (ctx.STRING() != null) {
+            System.out.print(ctx.STRING().getText());
+        } else if (ctx.FLOAT() != null) {
+            System.out.print(ctx.FLOAT().getText());
+        } else if (ctx.prefixexp() != null) {
+            enterPrefixexp(ctx.prefixexp());
+        } else if (ctx.arithmetic_operator() != null) {
+            enterExp(ctx.exp(0));
+            enterArithmetic_operator(ctx.arithmetic_operator());
+            enterExp(ctx.exp(1));
+        } else if (ctx.args() != null) {
+            if (ctx.TYPE() != null) {
+                System.out.print(ctx.TYPE().getText());
+            } else if (ctx.CLASSNAME() != null) {
+                System.out.print(ctx.CLASSNAME().getText());
+            }
+            enterArgs(ctx.args());
+        } else if (!ctx.exp().isEmpty()) {
+            System.out.print('(');
+            enterExp(ctx.exp(0));
+            System.out.print(')');
+        } else if (ctx.ID() != null) {
+            System.out.print(ctx.ID().getText());
+            enterArgs(ctx.args());
+        } else {
+            System.out.print("void");
+        }
     }
 
     @Override
@@ -259,7 +441,7 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterPrefixexp(JythonParser.PrefixexpContext ctx) {
-        System.out.println(ctx.prefixexp().getText());
+
     }
 
     @Override
@@ -269,17 +451,20 @@ public class ProgramPrinter implements JythonListener {
 
     @Override
     public void enterArgs(JythonParser.ArgsContext ctx) {
-        System.out.println('(' + ctx.explist().getText() + ')');
+        if (ctx.explist() != null) {
+            System.out.print('(');
+            enterExplist(ctx.explist());
+        }
     }
 
     @Override
     public void exitArgs(JythonParser.ArgsContext ctx) {
-
+        System.out.print(')');
     }
 
     @Override
     public void enterExplist(JythonParser.ExplistContext ctx) {
-        System.out.println('(' + ctx.getText() + ')');
+        System.out.print('(' + ctx.getText() + ')');
     }
 
     @Override

@@ -22,8 +22,19 @@ class Human(Nothing, Nothing2){
             eat(newFood)
             self.isHungry = self.checkIsHungry()
         }
+        if(self.isHungry){
+            Food newFood = Food()
+            eat(newFood)
+            self.isHungry = self.checkIsHungry()
+        }
     }
     def bool checkIsHungry(){
-        return true
+        if(isHungry == true){
+            print("he is hungry")
+            return true
+        } else {
+            print("he is not hungry")
+            return false
+        }
     }
 }
