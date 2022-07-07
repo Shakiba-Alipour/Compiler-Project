@@ -15,21 +15,21 @@ public class Symbol_Table {
     }
 
 
-    public void insert(String idefName, String attributes) throws ItemAlreadyExistsException, FieldAlreadyExistsException {
+    public void insert(String idefName, String attributes, int scopeNumber) throws FieldAlreadyExistsException, MethodAlreadyExistsException, UndefinedClassWxception, UndefinedFieldException {
         if (this.table.containsKey(idefName)) {
             if (this.table.get(idefName).getType().equals("method")) {
-                throw new ItemAlreadyExistsException();
+                throw new MethodAlreadyExistsException(idefName,scopeNumber);
             } else if (this.table.get(idefName).getType().equals("field")) {
-                throw new FieldAlreadyExistsException();
+                throw new FieldAlreadyExistsException(idefName,scopeNumber);
             }
         } else if (!this.table.containsKey(idefName)) {
-//            if (this.table.get(idefName).getType().equals("method")) {
-//                throw new ItemAlreadyExistsException();
-//            } else if (this.table.get(idefName).getType().equals("field")) {
-//                throw new FieldAlreadyExistsException();
-//            }
+            if (this.table.get(idefName).getType().equals("method")) {
+                throw new UndefinedClassWxception(idefName,scopeNumber);
+            } else if (this.table.get(idefName).getType().equals("field")) {
+                throw new UndefinedFieldException(idefName,scopeNumber);
+            }
         }
-        SymbolTableItem item = new SymbolTableItem(idefName, attributes);
+        SymbolTableItem item = new SymbolTableItem(idefName, attributes, scopeNumber);
         this.table.put(idefName, item);
     }
 
@@ -39,11 +39,17 @@ public class Symbol_Table {
 
     public String printItems() {
         String itemsStr = "";
-        for (Map.Entry<String, SymbolTableItem> entry :
-                table.entrySet()) {
-            itemsStr += "Key = " + entry.getKey() + " | Value = " + entry.getValue() + "\n";
+        if (!table.isEmpty()) {
+            for (Map.Entry<String, SymbolTableItem> entry :
+                    table.entrySet()) {
+                itemsStr += "Key = " + entry.getKey() + " | Value = " + entry.getValue() + "\n";
+            }
         }
         return itemsStr;
+    }
+
+    public int getSize() {
+        return this.table.size();
     }
 
     public String toString() {
