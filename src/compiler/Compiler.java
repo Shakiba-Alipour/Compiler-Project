@@ -54,11 +54,11 @@ public class Compiler {
                     String[] splitted = line.split(" ");
                     itemName = "Field_" + splitted[1];
                 } else if (line.contains("elif")) {
-                    name = "elif";
+                    name = "if";
                     String[] splitted = line.split(" ");
                     itemName = "Field_" + splitted[1];
                 } else if (line.contains("else")) {
-                    name = "else";
+                    name = "if";
                     String[] splitted = line.split(" ");
                     itemName = "Field_" + splitted[1];
                 } else if (line.contains("while")) {

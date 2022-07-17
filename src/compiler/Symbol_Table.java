@@ -23,11 +23,11 @@ public class Symbol_Table {
                 throw new FieldAlreadyExistsException(idefName,scopeNumber);
             }
         } else if (!this.table.containsKey(idefName)) {
-            if (this.table.get(idefName).getType().equals("method")) {
-                throw new UndefinedClassWxception(idefName,scopeNumber);
-            } else if (this.table.get(idefName).getType().equals("field")) {
-                throw new UndefinedFieldException(idefName,scopeNumber);
-            }
+//            if (this.table.get(idefName).getType().equals("class")) {
+//                throw new UndefinedClassWxception(idefName,scopeNumber);
+//            } else if (this.table.get(idefName).getType().equals("field")) {
+//                throw new UndefinedFieldException(idefName,scopeNumber);
+//            }
         }
         SymbolTableItem item = new SymbolTableItem(idefName, attributes, scopeNumber);
         this.table.put(idefName, item);

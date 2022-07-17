@@ -11,7 +11,8 @@ public class SymbolTableItem {
     private int scopeNumber;
 
     public SymbolTableItem(String name, String attributes, int scopeNumber) {
-
+        this.name = name;
+        this.scopeNumber = scopeNumber;
     }
 
     public String getKey() {
